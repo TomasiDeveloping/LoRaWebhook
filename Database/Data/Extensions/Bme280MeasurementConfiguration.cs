@@ -13,9 +13,9 @@ public class Bme280MeasurementConfiguration : IEntityTypeConfiguration<Bme280Mea
             .WithMany()
             .HasForeignKey(bm => bm.SensorId)
             .OnDelete(DeleteBehavior.NoAction);
-        builder.Property(bm => bm.Humidity).IsRequired().HasPrecision(5, 2);
-        builder.Property(bm => bm.Pressure).IsRequired().HasPrecision(4, 2);
-        builder.Property(bm => bm.Temperature).IsRequired().HasPrecision(4, 2);
+        builder.Property(bm => bm.Humidity).IsRequired().HasPrecision(18, 2);
+        builder.Property(bm => bm.Pressure).IsRequired().HasPrecision(18, 2);
+        builder.Property(bm => bm.Temperature).IsRequired().HasPrecision(18, 2);
         builder.Property(bm => bm.SendTime).IsRequired();
     }
 }
