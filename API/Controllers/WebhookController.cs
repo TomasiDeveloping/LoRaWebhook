@@ -1,4 +1,4 @@
-﻿using Core.Interfaces.Decoders;
+﻿using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -6,14 +6,14 @@ namespace API.Controllers;
 
 [Route("api/v{v:apiVersion}/[controller]")]
 [ApiController]
-public class Bme280WebhookController : ControllerBase
+public class WebhookController : ControllerBase
 {
-    private readonly IBme280Decoder _bme280Decoder;
-    private readonly ILogger<Bme280WebhookController> _logger;
+    private readonly ILogger<WebhookController> _logger;
+    private readonly IWebhookService _webhookService;
 
-    public Bme280WebhookController(IBme280Decoder bme280Decoder, ILogger<Bme280WebhookController> logger)
+    public WebhookController(IWebhookService webhookService, ILogger<WebhookController> logger)
     {
-        _bme280Decoder = bme280Decoder;
+        _webhookService = webhookService;
         _logger = logger;
     }
 
@@ -22,7 +22,7 @@ public class Bme280WebhookController : ControllerBase
     {
         try
         {
-            await _bme280Decoder.CreateMeasurement(obj);
+            await _webhookService.ProcessingSensorData(obj);
             return Ok();
         }
         catch (Exception e)
@@ -30,6 +30,5 @@ public class Bme280WebhookController : ControllerBase
             _logger.LogError(e, e.Message);
             return Ok();
         }
-
     }
 }

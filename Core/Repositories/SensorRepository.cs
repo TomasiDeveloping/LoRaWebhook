@@ -30,6 +30,7 @@ public class SensorRepository : ISensorRepository
     public async Task<SensorDto?> GetSensorByDevAddressAsync(string devAddress)
     {
         var sensor = await _loRaContext.Sensors
+            .Include(s => s.SensorType)
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.DevAddress.Equals(devAddress));
         return sensor == null ? null : _mapper.Map<SensorDto>(sensor);

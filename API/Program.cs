@@ -1,4 +1,6 @@
+using Core.Helpers;
 using Core.Helpers.Decoders;
+using Core.Interfaces;
 using Core.Interfaces.Decoders;
 using Core.Interfaces.Repositories;
 using Core.Profiles;
@@ -28,6 +30,7 @@ try
         options.AddProfile<SensorProfile>();
         options.AddProfile<SensorTypeProfile>();
         options.AddProfile<Bme280MeasurementProfile>();
+        options.AddProfile<Ds18B20MeasurementProfile>();
     });
 
     // Configure API Version
@@ -51,8 +54,11 @@ try
     builder.Services.AddScoped<ISensorRepository, SensorRepository>();
     builder.Services.AddScoped<ISensorTypeRepository, SensorTypeRepository>();
     builder.Services.AddScoped<IBme280MeasurementRepository, Bme280MeasurementRepository>();
+    builder.Services.AddScoped<IDs18B20MeasurementRepository, Ds18B20MeasurementRepository>();
+    builder.Services.AddScoped<IWebhookService, WebhookService>();
     // Add Decoders
     builder.Services.AddScoped<IBme280Decoder, Bme280Decoder>();
+    builder.Services.AddScoped<IDs18B20Decoder, Ds18B20Decoder>();
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();

@@ -11,32 +11,15 @@ public class Bme280Decoder : IBme280Decoder
 {
     private readonly IBme280MeasurementRepository _bme280MeasurementRepository;
     private readonly ILogger<Bme280Decoder> _logger;
-    private readonly ISensorRepository _sensorRepository;
 
-    public Bme280Decoder(ISensorRepository sensorRepository,
-        IBme280MeasurementRepository bme280MeasurementRepository, ILogger<Bme280Decoder> logger)
+    public Bme280Decoder(IBme280MeasurementRepository bme280MeasurementRepository, ILogger<Bme280Decoder> logger)
     {
-        _sensorRepository = sensorRepository;
         _bme280MeasurementRepository = bme280MeasurementRepository;
         _logger = logger;
     }
 
-    public async Task<bool> CreateMeasurement(JObject jObject)
+    public async Task<bool> CreateMeasurement(JObject jObject, SensorDto sensor)
     {
-        var devAddress = jObject.SelectToken("end_device_ids.dev_addr")?.ToString();
-        if (devAddress == null)
-        {
-            _logger.LogError("DevAddress in JObject is empty!");
-            return false;
-        }
-
-        var sensor = await GetSensor(devAddress);
-        if (sensor == null)
-        {
-            _logger.LogError($"No sensor found with devAddress: {devAddress}");
-            return false;
-        }
-
         var bme280Helper = GetValues(jObject);
 
         if (bme280Helper == null)
@@ -63,13 +46,7 @@ public class Bme280Decoder : IBme280Decoder
         await _bme280MeasurementRepository.InsertAsync(bmeMeasurement);
     }
 
-    private async Task<SensorDto?> GetSensor(string devAddress)
-    {
-        var sensor = await _sensorRepository.GetSensorByDevAddressAsync(devAddress);
-        return sensor;
-    }
-
-
+    
     private static Bme280Helper? GetValues(JToken jObject)
     {
         var temperatureString = jObject.SelectToken("uplink_message.decoded_payload.temperature")?.ToString();

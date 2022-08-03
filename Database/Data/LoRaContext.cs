@@ -13,6 +13,7 @@ public class LoRaContext : DbContext
     public DbSet<Sensor> Sensors { get; set; }
     public DbSet<SensorType> SensorTypes { get; set; }
     public DbSet<Bme280Measurement> Bme280Measurements { get; set; }
+    public DbSet<Ds18B20Measurement> Ds18B20Measurements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,5 +24,7 @@ public class LoRaContext : DbContext
         modelBuilder.ApplyConfiguration(new SensorTypeConfiguration());
 
         modelBuilder.ApplyConfiguration(new Bme280MeasurementConfiguration());
+
+        modelBuilder.ApplyConfiguration(new Ds18B20MeasurementConfiguration());
     }
 }
